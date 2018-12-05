@@ -13,6 +13,8 @@ module.exports = class StarlineRemote {
     this.password   = device.config.password   || '';
     this.interval   = device.config.interval || 10000;
     this.tz         = device.config.tz || 180;
+    this.debug      = device.debug;
+    this.log        = device.log;
     this.updateAccessoryInfo = device.updateAccessoryInfo.bind(device);
 
     this.device     = device;
@@ -31,7 +33,7 @@ module.exports = class StarlineRemote {
     if (this.checkingState) {
       return Promise.reject('Checking state is in progress');
     }
-    // console.log('Checking state');
+    // this.debug('Checking state');
     this.checkingState = true;
 
     const state = await this.remote.getState();
@@ -39,7 +41,7 @@ module.exports = class StarlineRemote {
       this.currentState = state;
       this.updateAccessoryInfo(state);
     } else {
-      console.log('checking is fault');
+      this.log('Checking failed');
     }
     this.checkingState = false;
     await this._delay(this.interval);
@@ -47,7 +49,7 @@ module.exports = class StarlineRemote {
   }
 
   async executeCommand(...args) {
-    return await this.remote.executeCommand(this.currentState.device_id, ...args);
+    return /* await */ this.remote.executeCommand(this.currentState.device_id, ...args);
   }
 
   /**
@@ -116,7 +118,7 @@ class RemoteService {
       }
       return false;
     } catch (e) {
-      console.error('e');
+      this.log('e');
     }
   }
 

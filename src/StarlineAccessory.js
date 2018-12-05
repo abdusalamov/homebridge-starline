@@ -67,7 +67,7 @@ module.exports = class StarlineAccessory {
    * @param {Function} callback
    */
   async _setSwitch(key, value, callback) {
-    console.log(key, value);
+    this.debug(`${key} - ${value}`);
     try {
       const result = await this.remote.executeCommand(key.split('.')[1], value);
       let newState = value;
