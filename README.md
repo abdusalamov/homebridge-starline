@@ -67,7 +67,7 @@ All settings (except delay) are required
 | Name | Description |
 | :------------ | :------------ |
 | name | Name of the device in Starline system |
-| username | The username of your account |
+| username | The username of your Starline account |
 | password | :) |
 | interval | This is the interval between check states of vehicle. By default it is `10000 ms` |
 | tz | TimeZone in minutes. By default it is `180` (Europe/Moscow) |
