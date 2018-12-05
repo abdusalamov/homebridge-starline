@@ -1,7 +1,7 @@
 # homebridge-starline
 This is a plugin for [homebridge](https://github.com/nfarina/homebridge). It allows you to control your Starline with HomeKit and Siri.
 
-![HomeKit-Screenshot](https://github.com/abdusalamov/homebridge-starline/tree/master/screenshotes/img1.jpg)
+![HomeKit-Screenshot](https://raw.githubusercontent.com/abdusalamov/homebridge-starline/master/screenshotes/img1.jpg)
 
 ## Installation
 - Install HomeBridge, please follow it's [README](https://github.com/nfarina/homebridge/blob/master/README.md)
