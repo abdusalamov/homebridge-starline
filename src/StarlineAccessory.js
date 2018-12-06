@@ -25,6 +25,11 @@ module.exports = class StarlineAccessory {
         .on('set', this._setSwitch.bind(this, this.key));
     } else if (this.type === 'TemperatureSensor') {
       this.service = new this.hap.Service.TemperatureSensor(this.name);
+      this.service
+        .getCharacteristic(this.hap.Characteristic.CurrentTemperature)
+        .setProps({
+          minValue: -50
+        });
     } else if (this.type === 'MotionSensor') {
       this.service = new this.hap.Service.MotionSensor(this.name);
     } else if (this.type === 'ContactSensor') {
