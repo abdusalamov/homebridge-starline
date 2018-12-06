@@ -12,7 +12,7 @@ This is a plugin for [homebridge](https://github.com/nfarina/homebridge). It all
 
 ## Configuration
 - Edit your configuration file from `~/.homebridge/config.json`
-- Platform should always be **StarlinePlatform** then on the devices you can add your Starline's
+- Platform should always be **StarlinePlatform** so on the devices you can add your Starline's
 - The **Username** and **Password** are required in order to send the commands
 
 ```
@@ -26,7 +26,7 @@ This is a plugin for [homebridge](https://github.com/nfarina/homebridge). It all
 }]
 ```
 
-### By default no one switch will be created for the Starline. You do have the option to create more custom switches with different actions. Accessories with type `Switch` can send commands to you vehicle! You can add some custom accessories if you are learn API of Starline-online.
+### By default no switch will be created for the Starline. You do have the option to create more custom switches with different actions. Accessories with type `Switch` can send commands to you vehicle! You can add some custom accessories if you learn API of Starline-online.
 
 ```
 "platforms": [{
@@ -62,13 +62,12 @@ This is a plugin for [homebridge](https://github.com/nfarina/homebridge). It all
 ```
 
 ## Device settings
-All settings (except delay) are required
 
 | Name | Description |
 | :------------ | :------------ |
-| name | Name of the device in Starline system |
-| username | The username of your Starline account |
-| password | :) |
+| name * | Name of the device in Starline system |
+| username * | The username of your Starline account |
+| password * | :) |
 | interval | This is the interval between check states of vehicle. By default it is `10000 ms` |
 | tz | TimeZone in minutes. By default it is `180` (Europe/Moscow) |
 
@@ -79,5 +78,5 @@ The server is crashing at load with the folowing error `SyntaxError: Unexpected 
 Update your **Node** to a newer version.
 
 ### Other
-If you have other problem run HomeBridge with debug mode `DEBUG=* homebridge -D` and [open a new Issue](https://github.com/abdusalamov/homebridge-starline/issues/new) and we will try to figure it out together :)
+If you have some other problem run HomeBridge with debug mode `DEBUG=* homebridge -D` and [open a new Issue](https://github.com/abdusalamov/homebridge-starline/issues/new) and we will try to figure it out together :)
 
