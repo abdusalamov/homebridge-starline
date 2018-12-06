@@ -15,7 +15,7 @@
                   "name": "M32 CanLin T Evo X",
                   "username": "",
                   "password": "",
-                  "interval": 10000,
+                  "interval": 5000,
                   "tz": 180,
                   "accessories": [
                       { "name": "Car online", "type": "Lightbulb", "key": "status" },

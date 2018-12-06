@@ -17,8 +17,8 @@ module.exports = class StarlineDevice {
 
     log.prefix = config['alias'];
 
-    this.log   = function(message) { log.log(null, message) }
-    this.debug = function(message) { log.debug('[DEBUG]', message) }
+    this.log   = function(message) { log.log(null, `[StarlinePlatform] ${message}`) }
+    this.debug = function(message) { log.debug('[StarlinePlatform] [DEBUG]', message) }
 
     // Check if we have device info
     if (!config.username) throw new Error(`Starline username is required for ${config['alias']}`);

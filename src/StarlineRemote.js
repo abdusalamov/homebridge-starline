@@ -1,4 +1,3 @@
-let exec      = require('child_process').exec;
 let request   = require('co-request');
 
 module.exports = class StarlineRemote {
@@ -11,7 +10,7 @@ module.exports = class StarlineRemote {
     this.name       = device.config.name  || 'StarlineVehicle';
     this.username   = device.config.username || '';
     this.password   = device.config.password   || '';
-    this.interval   = device.config.interval || 10000;
+    this.interval   = device.config.interval || 5000;
     this.tz         = device.config.tz || 180;
     this.debug      = device.debug;
     this.log        = device.log;
@@ -71,6 +70,8 @@ class RemoteService {
     this.username = config.username;
     this.password = config.password;
     this.name = config.name;
+    this.log = config.log;
+    this.debug = config.debug;
     this.prefix = `https://starline-online.ru`;
     this.cookies = null;
     this.headers = {
@@ -116,9 +117,10 @@ class RemoteService {
         this.cookies = this.parseCookies(result.headers['set-cookie']);
         return true;
       }
+      this.debug(`Authorization request returns ${result.statusCode}, body: ${result.body}`);
       return false;
     } catch (e) {
-      this.log('e');
+      this.log('Authorization failed', e);
     }
   }
 
@@ -154,8 +156,9 @@ class RemoteService {
         }
         return device;
       }
+      this.debug(`GetState request returns ${result.statusCode}, body: ${result.body}`);
     } catch (e) {
-      throw new Error(e);
+      this.log(`Cannot check state ${e}`);
     }
   }
 
@@ -176,7 +179,7 @@ class RemoteService {
       });
       return result.statusCode === 204;
     } catch (e) {
-      throw new Error(e);
+      this.log(`Cannot execute command ${e}`);
     }
   }
 }
