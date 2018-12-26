@@ -38,6 +38,8 @@ module.exports = class StarlineAccessory {
       this.service = new this.hap.Service.Lightbulb(this.name);
       this.service
         .getCharacteristic(this.hap.Characteristic.On)
+    } else if (this.type === 'HumiditySensor') {
+      this.service = new this.hap.Service.HumiditySensor(this.name);
     } else if (this.type === 'LightSensor') {
       this.service = new this.hap.Service.LightSensor(this.name);
     }
@@ -106,25 +108,22 @@ module.exports = class StarlineAccessory {
       this.service
         .getCharacteristic(this.hap.Characteristic.CurrentTemperature)
         .updateValue(state);
-    } else if (this.type === 'Lightbulb') {
+    } else if (this.type === 'HumiditySensor') {
       let percents = 0;
-      let newState = state;
       if (this.key === 'gsm_lvl') {
         percents = state / 30 * 100;
       } else if (this.key === 'gps_lvl') {
         percents = Math.min(state / 16 * 100, 100);
-      } else if (this.key === 'status') {
-        newState = state === 1;
       }
-
-      this.service
-        .getCharacteristic(this.hap.Characteristic.On)
-        .updateValue(!!newState);
       if (this.key !== 'status') {
         this.service
-          .getCharacteristic(this.hap.Characteristic.Brightness)
+          .getCharacteristic(this.hap.Characteristic.CurrentRelativeHumidity)
           .updateValue(percents);
       }
+    } else if (this.type === 'Lightbulb') {
+      this.service
+        .getCharacteristic(this.hap.Characteristic.On)
+        .updateValue(!!state);
     } else if (this.type === 'LightSensor') {
       this.service
         .getCharacteristic(this.hap.Characteristic.CurrentAmbientLightLevel)

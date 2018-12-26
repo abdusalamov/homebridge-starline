@@ -152,13 +152,13 @@ class RemoteService {
           }
         });
         if (!device) {
-          throw new Error('Device by specified name is not found');
+          throw new Error('Device by specified name not found');
         }
         return device;
       }
       this.debug(`GetState request returns ${result.statusCode}, body: ${result.body}`);
     } catch (e) {
-      this.log(`Cannot check state ${e}`);
+      this.log(`Cannot check state: ${e}`);
     }
   }
 

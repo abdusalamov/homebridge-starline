@@ -18,24 +18,121 @@
                   "interval": 5000,
                   "tz": 180,
                   "accessories": [
-                      { "name": "Car online", "type": "Lightbulb", "key": "status" },
-                      { "name": "Двигатель", "type": "Switch", "key": "car_state.ign" },
-                      { "name": "Сигнализация", "type": "MotionSensor", "key": "car_state.alarm" },
-                      { "name": "Температура двигателя", "type": "TemperatureSensor", "key": "etemp" },
-                      { "name": "Температура салона", "type": "TemperatureSensor", "key": "ctemp" },
-                      { "name": "Напряжение сети", "type": "LightSensor", "key": "battery" },
-                      { "name": "GPS", "type": "Lightbulb", "key": "gps_lvl" },
-                      { "name": "GSM", "type": "Lightbulb", "key": "gsm_lvl" },
-                      { "name": "Баланс, ₽", "type": "LightSensor", "key": "balance.active.value" },
-                      { "name": "Охрана", "type": "Switch", "key": "car_state.arm" },
-                      { "name": "Двери", "type": "ContactSensor", "key": "car_state.door" },
-                      { "name": "Ручной тормоз", "type": "MotionSensor", "key": "car_state.hbrake" },
-                      { "name": "Капот", "type": "MotionSensor", "key": "car_state.hood" },
-                      { "name": "Зажигание", "type": "MotionSensor", "key": "car_state.run" },
-                      { "name": "Багажник", "type": "MotionSensor", "key": "car_state.trunk" },
-                      { "name": "Webasto", "type": "MotionSensor", "key": "car_state.webasto" },
-                      { "name": "Наклон", "type": "MotionSensor", "key": "car_state.tilt_bpass" },
-                      { "name": "Удар", "type": "MotionSensor", "key": "car_state.shock_bpass" }
+                    {
+                      "name": "Car online",
+                      "type": "Lightbulb",
+                      "key": "status"
+                    },
+                    {
+                        "name": "Двигатель",
+                        "type": "Switch",
+                        "key": "car_state.ign"
+                    },
+                    {
+                        "name": "Сигнализация",
+                        "type": "MotionSensor",
+                        "key": "car_state.alarm"
+                    },
+                    {
+                        "name": "Температура двигателя",
+                        "type": "TemperatureSensor",
+                        "key": "etemp"
+                    },
+                    {
+                        "name": "Температура салона",
+                        "type": "TemperatureSensor",
+                        "key": "ctemp"
+                    },
+                    {
+                        "name": "Напряжение сети",
+                        "type": "LightSensor",
+                        "key": "battery"
+                    },
+                    {
+                        "name": "GPS",
+                        "type": "HumiditySensor",
+                        "key": "gps_lvl"
+                    },
+                    {
+                        "name": "GSM",
+                        "type": "HumiditySensor",
+                        "key": "gsm_lvl"
+                    },
+                    {
+                        "name": "Баланс, ₽",
+                        "type": "LightSensor",
+                        "key": "balance.active.value"
+                    },
+                    {
+                        "name": "Охрана",
+                        "type": "Switch",
+                        "key": "car_state.arm"
+                    },
+                    {
+                        "name": "Двери",
+                        "type": "ContactSensor",
+                        "key": "car_state.door"
+                    },
+                    {
+                        "name": "Ручной тормоз",
+                        "type": "MotionSensor",
+                        "key": "car_state.hbrake"
+                    },
+                    {
+                        "name": "Капот",
+                        "type": "ContactSensor",
+                        "key": "car_state.hood"
+                    },
+                    {
+                        "name": "Зажигание",
+                        "type": "MotionSensor",
+                        "key": "car_state.run"
+                    },
+                    {
+                        "name": "Багажник",
+                        "type": "ContactSensor",
+                        "key": "car_state.trunk"
+                    },
+                    {
+                        "name": "Webasto",
+                        "type": "Switch",
+                        "key": "car_state.webasto"
+                    },
+                    {
+                        "name": "Наклон",
+                        "type": "MotionSensor",
+                        "key": "car_state.tilt_bpass"
+                    },
+                    {
+                        "name": "Удар",
+                        "type": "MotionSensor",
+                        "key": "car_state.shock_bpass"
+                    },
+                    {
+                        "name": "Антиограбление",
+                        "type": "Switch",
+                        "key": "car_state.hijack"
+                    },
+                    {
+                        "name": "Доп. канал",
+                        "type": "Switch",
+                        "key": "car_state.add_sens_bpass"
+                    },
+                    {
+                        "name": "Гудок",
+                        "type": "Switch",
+                        "key": "car_state.poke"
+                    },
+                    {
+                        "name": "Сервисный режим",
+                        "type": "Switch",
+                        "key": "car_state.valet"
+                    },
+                    {
+                        "name": "Свободные руки",
+                        "type": "Switch",
+                        "key": "car_state.hfree"
+                    }
                   ]
               }
           ]
