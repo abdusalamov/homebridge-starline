@@ -1,4 +1,3 @@
-let _get = require('lodash/get');
 let StarlineRemote    = require('./StarlineRemote');
 let StarlineAccessory = require('./StarlineAccessory');
 
@@ -14,6 +13,31 @@ module.exports = class StarlineDevice {
     this.hap         = hap;
     this.config      = config;
     this.accessories = [];
+    this.accessoryTypes = [
+      'CarOnline',
+      'Engine',
+      'AddSens',
+      'Alarm',
+      'Arm',
+      'Balance',
+      'BatteryVoltage',
+      'CabinTemperature',
+      'Doors',
+      'EngineTemperature',
+      'GPS',
+      'GSM',
+      'Handbrake',
+      'Handsfree',
+      'Hijack',
+      'Hood',
+      'Poke',
+      'Run',
+      'Shock',
+      'Tilt',
+      'Trunk',
+      'Valet',
+      'Webasto'
+    ];
 
     log.prefix = config['alias'];
 
@@ -38,19 +62,35 @@ module.exports = class StarlineDevice {
    */
   initAccessories() {
     this.accessories = [];
+    
+    for (let type of this.accessoryTypes) {
+      const patch = this.findPatch(type);
+      if (patch && patch.disabled) {
+        continue;
+      }
+      const accessory = new (require(`./accessories/${type}`))(this.hap, {
+        name: patch && patch.name
+      });
+      // Create and add the new accessory
+      this.accessories.push(new StarlineAccessory({ ...this, accessory, config: { ...this.config, ...accessory } }));
+    }
+  }
 
-    // If we have custom switches create them
-    if (Array.isArray(this.config['accessories'])) {
-      for (let element of this.config['accessories']) {
-        // Create and add the new accessory
-        this.accessories.push(new StarlineAccessory({...this, config: {...this.config, ...element}}, element.type, element.key));
+  findPatch(type) {
+    if (!Array.isArray(this.config['patchAccessories'])) {
+      return;
+    }
+    for (let patch of this.config['patchAccessories']) {
+      if (patch.code === type) {
+        return patch;
       }
     }
   }
 
   updateAccessoryInfo(data) {
-    for (let accessory of this.accessories) {
-      const state = _get(data, accessory.key);
+    for (let starlineAccessory of this.accessories) {
+      const accessory = starlineAccessory.accessory;
+      const state = accessory.getAccessoryState(data);
       if (typeof state !== 'undefined') {
         accessory.update(state);
       }

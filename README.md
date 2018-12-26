@@ -1,7 +1,7 @@
 # homebridge-starline
 This is a plugin for [homebridge](https://github.com/nfarina/homebridge). It allows you to control your Starline with HomeKit and Siri.
 
-![HomeKit-Screenshot](https://raw.githubusercontent.com/abdusalamov/homebridge-starline/master/screenshotes/img1.jpg)
+![HomeKit-Screenshot](https://raw.githubusercontent.com/abdusalamov/homebridge-starline/master/screenshotes/img1.png)
 
 ## Installation
 - Install HomeBridge, please follow it's [README](https://github.com/nfarina/homebridge/blob/master/README.md)
@@ -26,7 +26,7 @@ This is a plugin for [homebridge](https://github.com/nfarina/homebridge). It all
 }]
 ```
 
-### By default no switch will be created for the Starline. You do have the option to create more custom switches with different actions. Accessories with type `Switch` can send commands to you vehicle! You can add some custom accessories if you learn API of Starline-online.
+### By default all available accessories will be created for the Starline. You do have the option to change or remove some accessories. Use the `patchAccessories` for that. Specify the accessory code, and now you can hide accessory (disabled: true) or change name. Below you can find a list of all accessories.
 
 ```
 "platforms": [{
@@ -37,26 +37,13 @@ This is a plugin for [homebridge](https://github.com/nfarina/homebridge). It all
         "password": "",
         "interval": 5000,
         "tz": 180,
-        "accessories": [
-          { "name": "Car online", "type": "Lightbulb", "key": "status" },
-          { "name": "Engine", "type": "Switch", "key": "car_state.ign" },
-          { "name": "Alarm", "type": "MotionSensor", "key": "car_state.alarm" },
-          { "name": "Engine temperature", "type": "TemperatureSensor", "key": "etemp" },
-          { "name": "Cabin temperature", "type": "TemperatureSensor", "key": "ctemp" },
-          { "name": "Voltage", "type": "LightSensor", "key": "battery" },
-          { "name": "GPS", "type": "Lightbulb", "key": "gps_lvl" },
-          { "name": "GSM", "type": "Lightbulb", "key": "gsm_lvl" },
-          { "name": "Balance, ₽", "type": "LightSensor", "key": "balance.active.value" },
-          { "name": "Security", "type": "Switch", "key": "car_state.arm" },
-          { "name": "Doors", "type": "ContactSensor", "key": "car_state.door" },
-          { "name": "Hand brake", "type": "MotionSensor", "key": "car_state.hbrake" },
-          { "name": "Hood", "type": "MotionSensor", "key": "car_state.hood" },
-          { "name": "Ignition", "type": "MotionSensor", "key": "car_state.run" },
-          { "name": "Trunk", "type": "MotionSensor", "key": "car_state.trunk" },
-          { "name": "Webasto", "type": "MotionSensor", "key": "car_state.webasto" },
-          { "name": "Tilt", "type": "MotionSensor", "key": "car_state.tilt_bpass" },
-          { "name": "Shock", "type": "MotionSensor", "key": "car_state.shock_bpass" }
-      ]
+        "patchAccessories": [
+          {
+            "code": "Webasta",
+            "disabled": false,
+            "name": "Предпусковой подогрев"
+          }
+        ]
     }]
 }]
 ```
@@ -79,4 +66,31 @@ Update your **Node** to a newer version.
 
 ### Other
 If you have some other problem run HomeBridge with debug mode `DEBUG=* homebridge -D` and [open a new Issue](https://github.com/abdusalamov/homebridge-starline/issues/new) and we will try to figure it out together :)
+
+## Accessories list
+```
+CarOnline
+Engine
+AddSens
+Alarm
+Arm
+Balance
+BatteryVoltage
+CabinTemperature
+Doors
+EngineTemperature
+GPS
+GSM
+Handbrake
+Handsfree
+Hijack
+Hood
+Poke
+Run
+Shock
+Tilt
+Trunk
+Valet
+Webasto
+```
 
