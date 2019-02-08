@@ -75,7 +75,7 @@ class RemoteService {
     this.prefix = `https://starline-online.ru`;
     this.cookies = null;
     this.headers = {
-      'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:28.0) Gecko/20100101 Firefox/2.0',
+      'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:28.0) Gecko/20100101 Firefox/28.0',
       // 'Accept': 'application/json, text/javascript, */*; q=0.01',
       // 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
       'X-Requested-With': 'XMLHttpRequest'
@@ -87,11 +87,17 @@ class RemoteService {
       await this.authentication();
     }
 
-    let result = await request(obj);
+    let result = await request({
+      ...obj,
+      headers: {
+        ...obj.headers,
+        Cookie: this.cookies
+      }
+    });
 
     if (result.statusCode === 403) {
       await this.authentication();
-      result = await request({
+      return await request({
         ...obj,
         headers: {
           ...obj.headers,
@@ -109,7 +115,8 @@ class RemoteService {
         method: 'POST',
         form: {
           'LoginForm[login]': this.username,
-          'LoginForm[pass]': this.password
+          'LoginForm[pass]': this.password,
+          'LoginForm[rememberMe]': 'on'
         },
         headers: this.headers
       });
@@ -127,20 +134,19 @@ class RemoteService {
   parseCookies(rawData) {
     const result = [];
     rawData.forEach(raw => {
-      if (!raw.includes('PHPSESSID')) return;
+      // if (!raw.includes('PHPSESSID', 'userAgentId')) return;
       result.push(raw.split(';')[0]);
     });
-    return result.join(';');
+    return result.join('; ');
   }
   
   async getState() {
     try {
       const result = await this.request({
-        uri: `${this.prefix}/device?tz=${this.tz}`,
+        uri: `${this.prefix}/device?tz=${this.tz || 180}&_=${(new Date()).getTime()}`,
         method: 'GET',
         headers: {
           ...this.headers,
-          Cookie: this.cookies
         },
         json: true
       });

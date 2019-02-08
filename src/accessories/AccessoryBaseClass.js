@@ -22,10 +22,6 @@ module.exports = class AccessoryBaseClass {
     }
   }
 
-  getAccessoryState(state) {
-    return state[key];
-  }
-
   getAccessoryState() {
     throw new Error('The method getAccessoryState() must be overridden.');
   }
