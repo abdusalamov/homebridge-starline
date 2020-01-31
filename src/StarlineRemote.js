@@ -111,12 +111,12 @@ class RemoteService {
   async authentication() {
     try {
       const result = await request({
-        uri: `${this.prefix}/user/login`,
+        uri: `${this.prefix}/rest/security/login`,
         method: 'POST',
         form: {
-          'LoginForm[login]': this.username,
-          'LoginForm[pass]': this.password,
-          'LoginForm[rememberMe]': 'on'
+          'username': this.username,
+          'password': this.password,
+          'rememberMe': true
         },
         headers: this.headers
       });
