@@ -17,7 +17,7 @@
           "password": "",
           "appId": "",
           "secret": "",
-          "interval": 180000,
+          "interval": 120000,
           "patchAccessories": [
             {
               "code": "Webasto",

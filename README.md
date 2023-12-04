@@ -21,7 +21,9 @@ This is a plugin for [homebridge](https://github.com/nfarina/homebridge). It all
     "devices": [{
         "name": "BMW 528i",
         "username": "superman",
-        "password": ""
+        "password": "",
+        "appId": "",
+        "secret": "",
     }]
 }]
 ```
@@ -35,8 +37,9 @@ This is a plugin for [homebridge](https://github.com/nfarina/homebridge). It all
         "name": "BMW 528i",
         "username": "superman",
         "password": "",
-        "interval": 5000,
-        "tz": 180,
+        "appId": "",
+        "secret": "",
+        "interval": 120000,
         "patchAccessories": [
           {
             "code": "Webasta",
@@ -50,18 +53,21 @@ This is a plugin for [homebridge](https://github.com/nfarina/homebridge). It all
 
 ## Device settings
 
-| Name | Description |
-| :------------ | :------------ |
-| name * | Name of the device in Starline system |
-| username * | The username of your Starline account |
-| password * | :) |
-| interval | This is the interval between check states of vehicle. By default it is `5000 ms` (every 5 seconds) |
-| tz | TimeZone in minutes. By default it is `180` (Europe/Moscow) |
+| Name       | Description                                                                                                                                                                 |
+|:-----------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| name *     | Name of the device in Starline system                                                                                                                                       |
+| username * | The username of your Starline account                                                                                                                                       |
+| password * | Your password                                                                                                                                                               |
+| appId      | Application Id key                                                                                                                                                          |
+| secret     | Application secret key                                                                                                                                                      |
+| interval   | This is the interval between check states of vehicle. By default it is `120000 ms` (every 2 minutes). There is a limit from StarLine - not more than 1000 requests per day. |
+
+**appId** and **secret** need to be requested at https://my.starline.ru/developer
 
 ## Common Issues
 
 ### HomeBridge is crashing because of the plugin
-The server is crashing at load with the folowing error `SyntaxError: Unexpected token ...`
+The server is crashing at load with the following error `SyntaxError: Unexpected token ...`
 Update your **Node** to a newer version.
 
 ### Other
