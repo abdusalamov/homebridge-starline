@@ -1,31 +1,32 @@
 {
   "bridge": {
-      "name": "Homebridge test",
-      "username": "CC:22:3D:E3:CE:30",
-      "port": 51826,
-      "pin": "031-45-155"
+    "name": "Homebridge test",
+    "username": "CC:22:3D:E3:CE:30",
+    "port": 51826,
+    "pin": "031-45-155"
   },
   "description": "This is an example configuration file with one fake accessory and one fake platform. You can use this as a template for creating your own configuration file containing devices you actually own.",
   "accessories": [],
   "platforms": [
-      {
-          "platform": "StarlinePlatform",
-          "devices": [
-              {
-                  "name": "M32 CanLin T Evo X",
-                  "username": "",
-                  "password": "",
-                  "interval": 5000,
-                  "tz": 180,
-                  "patchAccessories": [
-                    {
-                      "code": "Webasto",
-                      "disabled": false,
-                      "name": "Вебаста"
-                    }
-                  ]
-              }
+    {
+      "platform": "StarlinePlatform",
+      "devices": [
+        {
+          "name": "M32 CanLin T Evo X",
+          "username": "",
+          "password": "",
+          "appId": "",
+          "secret": "",
+          "interval": 180000,
+          "patchAccessories": [
+            {
+              "code": "Webasto",
+              "disabled": false,
+              "name": "Вебаста"
+            }
           ]
-      }
+        }
+      ]
+    }
   ]
 }

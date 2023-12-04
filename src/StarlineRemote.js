@@ -1,4 +1,6 @@
 let request   = require('co-request');
+let md5 = require('md5');
+let sha1 = require('sha1');
 
 module.exports = class StarlineRemote {
   /**
@@ -10,8 +12,9 @@ module.exports = class StarlineRemote {
     this.name       = device.config.name  || 'StarlineVehicle';
     this.username   = device.config.username || '';
     this.password   = device.config.password   || '';
-    this.interval   = device.config.interval || 5000;
-    this.tz         = device.config.tz || 180;
+    this.appId      = device.config.appId   || '';
+    this.secret     = device.config.secret   || '';
+    this.interval   = device.config.interval || 180000;
     this.debug      = device.debug;
     this.log        = device.log;
     this.updateAccessoryInfo = device.updateAccessoryInfo.bind(device);
@@ -32,7 +35,7 @@ module.exports = class StarlineRemote {
     if (this.checkingState) {
       return Promise.reject('Checking state is in progress');
     }
-    // this.debug('Checking state');
+
     this.checkingState = true;
 
     const state = await this.remote.getState();
@@ -69,15 +72,20 @@ class RemoteService {
   constructor(config) {
     this.username = config.username;
     this.password = config.password;
+    this.appId = config.appId;
+    this.secret = config.secret;
     this.name = config.name;
     this.log = config.log;
     this.debug = config.debug;
-    this.prefix = `https://starline-online.ru`;
     this.cookies = null;
+    this.appCode = null;
+    this.appToken = null;
+    this.slidToken = null;
+    this.userId = null;
+
     this.headers = {
       'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:28.0) Gecko/20100101 Firefox/28.0',
-      // 'Accept': 'application/json, text/javascript, */*; q=0.01',
-      // 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+      'Accept': 'application/json, text/javascript, */*; q=0.01',
       'X-Requested-With': 'XMLHttpRequest'
     }
   }
@@ -110,24 +118,108 @@ class RemoteService {
 
   async authentication() {
     try {
-      const result = await request({
-        uri: `${this.prefix}/rest/security/login`,
-        method: 'POST',
-        form: {
-          'username': this.username,
-          'password': this.password,
-          'rememberMe': true
-        },
-        headers: this.headers
-      });
-      if (result.statusCode === 200) {
-        this.cookies = this.parseCookies(result.headers['set-cookie']);
-        return true;
+      if (!this.appCode) {
+        const uri = `https://id.starline.ru/apiV3/application/getCode?appId=${this.appId}&secret=${md5(this.secret)}`;
+        const result = await request({
+          uri: uri,
+          method: 'GET',
+          headers: this.headers
+        });
+        let response = JSON.parse(result.body);
+        if (result.statusCode === 200 && response.state === 1) {
+          this.appCode = response.desc.code;
+          this.debug('Get appCode: ' + this.appCode);
+        }
+        else if (result.statusCode === 200) {
+          this.log(`Couldn't get appCode: (${response.desc.message}).`);
+          return false;
+        }
+        else {
+          this.log(`Request to ${uri} failed.`);
+          return false;
+        }
       }
-      this.debug(`Authorization request returns ${result.statusCode}, body: ${result.body}`);
+
+      if (this.appCode && !this.appToken) {
+        const uri = `https://id.starline.ru/apiV3/application/getToken?appId=${this.appId}&secret=${md5(this.secret + this.appCode)}`;
+        const result = await request({
+          uri: uri,
+          method: 'GET',
+          headers: this.headers
+        });
+        let response = JSON.parse(result.body);
+        if (result.statusCode === 200 && response.state === 1) {
+          this.appToken = response.desc.token;
+          this.debug('Get appToken: ' + this.appToken);
+        }
+        else if (result.statusCode === 200) {
+          this.log(`Couldn't get appToken: (${response.desc.message}).`);
+          return false;
+        }
+        else {
+          this.log(`Request to ${uri} failed.`);
+          return false;
+        }
+      }
+
+      if (this.appCode && this.appToken && !this.slidToken) {
+        const uri = 'https://id.starline.ru/apiV3/user/login';
+        const body = {
+          'login': this.username,
+          'pass': sha1(this.password),
+        };
+        const result = await request({
+          uri: uri,
+          method: 'POST',
+          form: body,
+          headers: {
+            ...this.headers,
+            token: this.appToken
+          }
+        });
+        let response = JSON.parse(result.body);
+        if (result.statusCode === 200 && response.state === 1) {
+          this.slidToken = response.desc.user_token;
+          this.debug('Get slidToken: ' + this.slidToken);
+        }
+        else if (result.statusCode === 200) {
+          this.log(`Couldn't get slidToken: (${response.desc.message}).`);
+          return false;
+        }
+        else {
+          this.log(`Request to ${uri} with ${JSON.stringify(body)} failed.`);
+          return false;
+        }
+      }
+
+      if (this.appCode && this.appToken && this.slidToken && !this.userId) {
+        const uri = 'https://developer.starline.ru/json/v2/auth.slid';
+        const result = await request({
+          uri: uri,
+          method: 'POST',
+          body: JSON.stringify({slid_token: this.slidToken}),
+          headers: {
+            ...this.headers,
+            'Content-Type': 'application/json; charset=UTF-8'
+          }
+        });
+        let response = JSON.parse(result.body);
+        if (result.statusCode === 200 && (response.code === 200 || response.codestring === 'OK')) {
+          this.userId = response.user_id;
+          this.cookies = this.parseCookies(result.headers['set-cookie']);
+          this.debug('Get cookies: ' + this.cookies);
+          this.debug('Get userId: ' + this.userId);
+          return true;
+        }
+        else if (result.statusCode === 200) {
+          this.log(`Couldn't authorize. Error code: "${response.code}", message: "${response.codestring}"`);
+          return false;
+        }
+      }
+
       return false;
     } catch (e) {
-      this.log('Authorization failed', e);
+      this.log(`Authorization failed: ${e}`);
     }
   }
 
@@ -143,15 +235,16 @@ class RemoteService {
   async getState() {
     try {
       const result = await this.request({
-        uri: `${this.prefix}/device?tz=${this.tz || 180}&_=${(new Date()).getTime()}`,
+        uri: `https://developer.starline.ru/json/v2/user/${this.userId}/user_info`,
         method: 'GET',
         headers: {
           ...this.headers,
-        },
-        json: true
+          Cookie: this.cookies
+        }
       });
-      if (result.statusCode === 200) {
-        const devices = result.body.answer.devices;
+      let response = JSON.parse(result.body);
+      if (result.statusCode === 200 && (response.code === 200 || response.codestring === 'OK')) {
+        const devices = response.devices;
         const device = devices.find((element) => {
           if (element.alias === this.name) {
             return true;
@@ -161,6 +254,9 @@ class RemoteService {
           throw new Error('Device by specified name not found');
         }
         return device;
+      }
+      else if (result.statusCode === 200) {
+        this.log(`user_info request returns ${response.code}, message: ${response.codestring}`);
       }
       this.debug(`GetState request returns ${result.statusCode}, body: ${result.body}`);
     } catch (e) {
